@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tpsb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tpsb
+  template:
+    metadata:
+      labels:
+        app: tpsb
+    spec:
+      containers:
+        - name: tpsb
+          image: tpsb:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
