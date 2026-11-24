@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes tâches - TPSB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <span class="logo">✔ TPSB Tasks</span>
+    <a href="index.html" class="active">Mes tâches</a>
+    <a href="ajouter.html">Ajouter une tâche</a>
+  </nav>
+  <main>
+    <h1>Mes tâches</h1>
+    <div class="stats">
+      <div class="stat"><strong id="stat-total">0</strong><span>Total</span></div>
+      <div class="stat"><strong id="stat-todo">0</strong><span>À faire</span></div>
+      <div class="stat"><strong id="stat-done">0</strong><span>Terminées</span></div>
+    </div>
+    <div class="filters">
+      <button type="button" data-filter="all" class="active">Toutes</button>
+      <button type="button" data-filter="todo">À faire</button>
+      <button type="button" data-filter="done">Terminées</button>
+    </div>
+    <p id="message" class="message"></p>
+    <ul id="tasks" class="tasks"></ul>
+  </main>
+  <script>
+    const API = "/api/tasks";
+    let tasks = [];
+    let filter = "all";
+
+    function showError(text) {
+      const msg = document.getElementById("message");
+      msg.textContent = text;
+      msg.className = "message error";
+    }
+
+    async function loadTasks() {
+      try {
+        const res = await fetch(API);
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+        tasks = await res.json();
+        render();
+      } catch (error) {
+        console.error(error);
+        showError("Impossible de charger les tâches.");
+      }
+    }
+
+    async function send(url, method, body) {
+      try {
+        const options = { method: method };
+        if (body) {
+          options.headers = { "Content-Type": "application/json" };
+          options.body = JSON.stringify(body);
+        }
+        const res = await fetch(url, options);
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+        await loadTasks();
+      } catch (error) {
+        console.error(error);
+        showError("L'opération a échoué.");
+      }
+    }
+
+    function toggleTask(task) {
+      const body = { title: task.title, description: task.description, completed: !task.completed };
+      return send(API + "/" + encodeURIComponent(task.id), "PUT", body);
+    }
+
+    function deleteTask(id) {
+      return send(API + "/" + encodeURIComponent(id), "DELETE");
+    }
+
+    function createItem(task) {
+      const li = document.createElement("li");
+      li.className = task.completed ? "task done" : "task";
+
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.className = "check";
+      check.checked = task.completed;
+      check.setAttribute("aria-label", "Marquer comme terminée");
+      check.addEventListener("change", () => toggleTask(task));
+
+      const info = document.createElement("div");
+      info.className = "info";
+      const title = document.createElement("div");
+      title.className = "title";
+      title.textContent = task.title;
+      const desc = document.createElement("div");
+      desc.className = "desc";
+      desc.textContent = task.description || "";
+      info.append(title, desc);
+
+      const edit = document.createElement("a");
+      edit.className = "icon-btn";
+      edit.href = "ajouter.html?id=" + encodeURIComponent(task.id);
+      edit.textContent = "✏️";
+      edit.setAttribute("aria-label", "Modifier");
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "icon-btn delete";
+      del.textContent = "🗑";
+      del.setAttribute("aria-label", "Supprimer");
+      del.addEventListener("click", () => deleteTask(task.id));
+
+      li.append(check, info, edit, del);
+      return li;
+    }
+
+    function render() {
+      const done = tasks.filter(t => t.completed).length;
+      document.getElementById("stat-total").textContent = tasks.length;
+      document.getElementById("stat-done").textContent = done;
+      document.getElementById("stat-todo").textContent = tasks.length - done;
+
+      const list = document.getElementById("tasks");
+      list.replaceChildren();
+      const visible = tasks.filter(t => filter === "all" || (filter === "done") === t.completed);
+      if (visible.length === 0) {
+        const li = document.createElement("li");
+        li.className = "empty";
+        li.textContent = "Aucune tâche ici. Ajoutez-en une !";
+        list.appendChild(li);
+        return;
+      }
+      for (const task of visible) {
+        list.appendChild(createItem(task));
+      }
+    }
+
+    const filterButtons = document.querySelectorAll(".filters button");
+    for (const btn of filterButtons) {
+      btn.addEventListener("click", () => {
+        filter = btn.dataset.filter;
+        for (const b of filterButtons) {
+          b.classList.toggle("active", b === btn);
+        }
+        render();
+      });
+    }
+
+    loadTasks();
+  </script>
+</body>
+</html>

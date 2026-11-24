@@ -1,0 +1,39 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, sans-serif; background: #f4f6fb; color: #1f2937; }
+nav { background: #1e3a8a; padding: 0 24px; display: flex; align-items: center; gap: 24px; height: 60px; }
+nav .logo { color: #fff; font-weight: 700; font-size: 1.2rem; margin-right: auto; }
+nav a { color: #c7d2fe; text-decoration: none; font-weight: 500; padding: 6px 0; border-bottom: 2px solid transparent; }
+nav a:hover, nav a.active { color: #fff; border-bottom-color: #fff; }
+main { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+h1 { margin: 0 0 20px; font-size: 1.6rem; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); text-align: center; }
+.stat strong { display: block; font-size: 1.8rem; color: #1e3a8a; }
+.stat span { font-size: 0.85rem; color: #6b7280; }
+.filters { display: flex; gap: 8px; margin-bottom: 16px; }
+.filters button { border: 1px solid #c7d2fe; background: #fff; color: #1e3a8a; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+.filters button.active { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
+ul.tasks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.task { background: #fff; border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
+.task .info { flex: 1; min-width: 0; }
+.task .title { font-weight: 600; }
+.task .desc { color: #6b7280; font-size: 0.9rem; margin-top: 2px; }
+.task.done .title { text-decoration: line-through; color: #9ca3af; }
+.icon-btn { border: none; background: #eef2ff; border-radius: 8px; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.icon-btn:hover { background: #e0e7ff; }
+.icon-btn.delete:hover { background: #fee2e2; }
+.check { width: 22px; height: 22px; cursor: pointer; accent-color: #16a34a; }
+.empty { text-align: center; color: #6b7280; padding: 40px 0; }
+form.card { background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); display: flex; flex-direction: column; gap: 16px; }
+label { font-weight: 600; display: block; margin-bottom: 6px; }
+input[type="text"], textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; }
+textarea { min-height: 100px; resize: vertical; }
+.row { display: flex; align-items: center; gap: 8px; }
+.row label { margin: 0; font-weight: 500; }
+.actions { display: flex; gap: 10px; }
+.btn { padding: 10px 18px; border-radius: 8px; border: none; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+.btn.primary { background: #1e3a8a; color: #fff; }
+.btn.secondary { background: #e5e7eb; color: #1f2937; }
+.message { padding: 10px 14px; border-radius: 8px; display: none; }
+.message.ok { display: block; background: #dcfce7; color: #166534; }
+.message.error { display: block; background: #fee2e2; color: #991b1b; }
